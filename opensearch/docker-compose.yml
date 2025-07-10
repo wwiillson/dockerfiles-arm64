@@ -1,0 +1,29 @@
+services:
+  os:
+    image: opensearchproject/opensearch:2
+    container_name: os01
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks: 
+      - opensearch
+    environment:
+      - discovery.type=single-node
+      - cluster.name=local-cluster
+      - xpack.security.enabled=false
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Abcde$12345
+  dash:
+    image: opensearchproject/opensearch-dashboards:2
+    container_name: dash01
+    ports:
+      - "5601:5601"
+    networks: 
+      - opensearch
+    depends_on:
+      - os
+    environment:
+      - OPENSEARCH_HOSTS="http://os01:9200" 
+
+networks:
+  opensearch:
+    driver: bridge
